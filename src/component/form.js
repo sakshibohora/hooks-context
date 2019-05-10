@@ -1,31 +1,67 @@
-import React, { useContext } from 'react'
+import React, { useState } from 'react'
 import NextForm from './nextForm';
-import { InputContext } from './store'
-
+import MyContext from './MyContext';
+import InputText from './InputText'
 const Form = () => {
-  const { data } = useContext(InputContext)
+  const [form, setValue] = useState({
+    firstName: '',
+    lastName: '',
+    toggle: false,
+  })
+  
+  const onChange = (e) => {
+      setValue({
+        ...form,
+        [e.target.name]: e.target.value
+      })
+  }
+  const handleClick = () => {
+    setValue({
+      ...form,
+      toggle: true
+    })
+    console.log("firstName", form.firstName, form.lastName)
+  }
   return (
     <div>
       {
-        data.form.toggle === false ?
+        form.toggle === false ?
           <><table border="1">
             <tbody>
               <tr>
                 <td>First Name </td>
                 <td>
-                  <input type="text" name="firstName" value={data.form.firstName} onChange={data.handleChange} />
+                  <MyContext.Provider value={{
+                    editConfig: {
+                      name:"firstName",
+                      value: form.firstName,
+                      onChange: onChange,
+                      placeholder: "First Name"
+                    }
+                  }}>
+                    <InputText />
+                  </MyContext.Provider>
                 </td>
               </tr>
               <tr>
                 <td> Last Name</td>
                 <td>
-                  <input type="text" name="lastName" value={data.form.lastName} onChange={data.handleChange} />
+                  <MyContext.Provider value={{
+                    editConfig: {
+                      name:"lastName",
+                      value: form.lastName,
+                      onChange: onChange,
+                      placeholder: "Last Name"
+                    }
+                  }}>
+                    <InputText />
+                  </MyContext.Provider>
                 </td>
               </tr>
             </tbody>
           </table>
-            <button onClick={data.handleClick}>Next >></button>
-          </> : <NextForm />
+            <button onClick={handleClick}>Next >></button>
+          </> : <NextForm data={form}/>
       }
     </div>
   )

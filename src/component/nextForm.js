@@ -1,13 +1,19 @@
-import React, { useContext } from 'react'
-import { InputContext } from './store'
+import React, { useState } from 'react'
+import MyContext from './MyContext';
+import InputText from './InputText';
 
-const NextForm = () => {
-  const { data } = useContext(InputContext)
+const NextForm = (props) => {
+  const [mangoes, setMangoes] = useState();
 
+  const handleChange = (e) => {
+    setMangoes({
+      [e.target.name]: e.target.value
+    })
+  }
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(data.form.toggle)
-    console.log(data.form.mangoes)
+    alert("Hello " + props.data.firstName +" "+ props.data.lastName )
+    console.log(mangoes)
   }
   return (
     <div>
@@ -17,27 +23,37 @@ const NextForm = () => {
           <tbody>
             <tr>
               <td>Mango</td>
-              <td>Like<input
-                type="radio"
-                name="mangoes"
-                value="Like"
-                checked={data.form.mangoes === "Like"}
-                handleChange={data.handleChange}
-              />
-                Not like<input
-                  type="radio"
-                  name="mangoes"
-                  value="Not Like"
-                  checked={data.form.mangoes === "Not Like"}
-                  handleChange={data.handleChange}
-                />
-              </td>
+              <td>Like
+                <MyContext.Provider 
+                value={{
+                editConfig: {
+                  type: "radio",
+                  name:"mangoes",
+                  value: "like",
+                  onChange: handleChange,
+                }
+              }}>
+                <InputText />
+              </MyContext.Provider>
+                Not Like
+                  <MyContext.Provider 
+                  value={{
+                  editConfig: {
+                    type: "radio",
+                    name:"mangoes",
+                    value: "Not like",
+                    onChange: handleChange,
+                  }
+                }}>
+                  <InputText />
+                </MyContext.Provider>
+                </td>
             </tr>
           </tbody>
         </table>
-        <button>Submit</button>
+          <button>Submit</button>
       </form>
     </div>
-  )
-}
+      )
+    }
 export default NextForm
